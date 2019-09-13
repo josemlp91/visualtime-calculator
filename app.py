@@ -5,11 +5,6 @@ from visualtime_helper import VisualTimeHelper
 app = Flask(__name__)
 
 
-@app.route('/', methods=['GET'])
-def index():
-    return jsonify({"massage": "hello"})
-
-
 @app.route('/api/getWorkingTime', methods=['POST'])
 def get_working_time():
     content = request.get_json(silent=True)
