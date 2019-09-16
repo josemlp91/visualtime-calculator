@@ -12,6 +12,10 @@ from datetime import datetime
 class VisualTimeHelper:
 
     def __init__(self, username, password):
+        
+        os.environ['TZ'] = 'Europe/Madrid'
+        time.tzset()
+        
         self.base_url = "https://zerows.azurewebsites.net"
         self.headers = {
             'Sec-Fetch-Mode': 'cors',
