@@ -5,6 +5,7 @@ from utils import get_or_create
 from visualtime_helper import VisualTimeHelper
 import os
 import sys
+import json
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -52,8 +53,7 @@ def on_event():
             visualtime_client = VisualTimeHelper(user.email, user.password)
             visualtime_client.login()
 
-            output_time = visualtime_client.get_output_time()['output_time']
-            text = '{0} said: {1}'.format(user.email, output_time)
+            text = '{0} said: {1}'.format(user.email, json.dumps(visualtime_client.get_output_time()))
 
 
     else:
