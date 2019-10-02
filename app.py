@@ -39,7 +39,7 @@ def on_event():
 
     elif event['type'] == 'MESSAGE':
         message = event['message']['text']
-        message.replace("@visualtime", "")
+        message = message.replace("@visualtime", "")
 
         if message.startswith('/login'):
             if len(message.split()) >= 2:
