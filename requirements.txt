@@ -3,3 +3,5 @@ requests
 pytz
 flask_api
 gunicorn
+SQLAlchemy==1.3.5
+requests==2.22.0

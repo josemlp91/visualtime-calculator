@@ -1,21 +1,60 @@
 from flask import Flask, request, jsonify
 from flask_api import status
+
+from utils import get_or_create
 from visualtime_helper import VisualTimeHelper
+import os
+import sys
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+from models import User, Base
+from config import DATABASE_URL, USER_TABLE_NAME
 
 app = Flask(__name__)
 
 
 @app.route('/', methods=['POST'])
 def on_event():
+
     """Handles an event from Hangouts Chat."""
-    
+
+    engine = create_engine(DATABASE_URL)
+    if not engine.dialect.has_table(engine, USER_TABLE_NAME):
+        Base.metadata.create_all(engine)
+
+    Base.metadata.bind = engine
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+
     event = request.get_json()
-    
+    email = event['message']['sender']['email']
 
     if event['type'] == 'ADDED_TO_SPACE' and event['space']['type'] == 'ROOM':
-        text = 'Thanks for adding me to "%s"!' % event['space']['displayName']
+        text = 'Thanks for adding me to "{0}"!'.format(event['space']['displayName'])
+
+
     elif event['type'] == 'MESSAGE':
-        text = '{0} said: {1}'.format(event['message']['sender']['email'], event['message']['text'])
+        message = event['message']['text']
+
+
+        if message.startswith('/login'):
+            if len(message.split()) == 2:
+                password = message.split()[1]
+                user = get_or_create(session, User, email=email, password=password)
+
+        if message.startswith('/info'):
+            user = User.query().filter(User.email == email).first()
+
+            visualtime_client = VisualTimeHelper(user.email, user.password)
+            visualtime_client.login()
+
+            output_time = visualtime_client.get_output_time()['output_time']
+            text = '{0} said: {1}'.format(email, output_time)
+
+
     else:
         return
   
