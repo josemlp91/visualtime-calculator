@@ -1,5 +1,4 @@
 Flask==1.1.1
-requests
 pytz
 flask_api
 gunicorn
