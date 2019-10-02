@@ -32,6 +32,7 @@ def on_event():
 
     event = request.get_json()
     email = event['message']['sender']['email']
+    text = event['message']['text']
 
     if event['type'] == 'ADDED_TO_SPACE' and event['space']['type'] == 'ROOM':
         text = 'Thanks for adding me to "{0}"!'.format(event['space']['displayName'])
