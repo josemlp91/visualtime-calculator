@@ -58,6 +58,7 @@ def on_event():
                                                                          visualtime_info['working_time'],
                                                                          visualtime_info['output_time'],
                                                                          visualtime_info['percent'])
+            return jsonify({'text': text})
 
     else:
         return
