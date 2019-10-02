@@ -49,16 +49,20 @@ def on_event():
         if message.startswith('/info'):
             user = session.query(User).filter(User.email == email).first()
 
-            visualtime_client = VisualTimeHelper(user.email, user.password)
-            visualtime_client.login()
-            visualtime_info = visualtime_client.get_output_time()
-            text = 'Hola {0}: \n' \
-                   'Llevas trabajando: {1} \n' \
-                   'Hoy te vas a casa a las: {2} \n' \
-                   'El porcentaje de avance de tu jornada es: {3}'.format(user.email,
-                                                                         visualtime_info['working_time'],
-                                                                         visualtime_info['output_time'].split()[1],
-                                                                         visualtime_info['percent'])
+            if not user:
+                text = "Oppp!! usa /login <password> para iniciar tu usuario"
+
+            else:
+                visualtime_client = VisualTimeHelper(user.email, user.password)
+                visualtime_client.login()
+                visualtime_info = visualtime_client.get_output_time()
+                text = 'Hola {0}: \n' \
+                       'Llevas trabajando: {1} \n' \
+                       'Hoy te vas a casa a las: {2} \n' \
+                       'El porcentaje de avance de tu jornada es: {3} %'.format(user.email,
+                                                                             visualtime_info['working_time'],
+                                                                             visualtime_info['output_time'].split()[1],
+                                                                             visualtime_info['percent'])
             if user.email == "sergio.rodriguez@intelligenia.com":
                 text = 'Sergio, eres un paquete, no te vas de la oficina hasta que termines todo!!! Pringao!'
 
