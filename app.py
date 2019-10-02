@@ -11,7 +11,7 @@ def on_event():
     
     event = request.get_json()
     
-    
+
     if event['type'] == 'ADDED_TO_SPACE' and event['space']['type'] == 'ROOM':
         text = 'Thanks for adding me to "%s"!' % event['space']['displayName']
     elif event['type'] == 'MESSAGE':
@@ -19,7 +19,7 @@ def on_event():
     else:
         return
   
-    return json.jsonify({'text': text})
+    return jsonify({'text': text})
 
 
 
