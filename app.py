@@ -39,9 +39,10 @@ def on_event():
 
     elif event['type'] == 'MESSAGE':
         message = event['message']['text']
+        message.replace("@visualtime", "")
 
         if message.startswith('/login'):
-            if len(message.split()) == 2:
+            if len(message.split()) >= 2:
                 password = message.split()[1]
                 get_or_create(session, User, email=email, password=password)
                 text = 'Usuario {0} ha sido iniciado correctamente'.format(email)
