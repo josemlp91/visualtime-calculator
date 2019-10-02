@@ -60,10 +60,13 @@ def on_event():
                 text = 'Hola {0}: \n' \
                        'Llevas trabajando: {1} \n' \
                        'Hoy te vas a casa a las: {2} \n' \
-                       'El porcentaje de avance de tu jornada es: {3} %'.format(user.email,
-                                                                             visualtime_info['working_time'],
-                                                                             visualtime_info['output_time'].split()[1],
-                                                                             visualtime_info['percent'])
+                       'El porcentaje de avance de tu jornada es: {3} % \n' \
+                       'La jornada de hoy tiene: {4} horas'.format(user.email,
+                                                            visualtime_info['working_time'],
+                                                            visualtime_info['output_time'].split()[1],
+                                                            visualtime_info['percent'],
+                                                            visualtime_info['day'])
+
                 if user.email == "sergio.rodriguez@intelligenia.com":
                     text = 'Sergio, eres un paquete, no te vas de la oficina hasta que termines todo!!! Pringao!'
 
@@ -71,7 +74,6 @@ def on_event():
         return
   
     return jsonify({'text': text})
-
 
 
 @app.route('/api/getWorkingTime', methods=['POST'])
