@@ -49,7 +49,7 @@ def on_event():
         if message.startswith('/info'):
             users = session.query(User).filter(User.email == email)
 
-            if not users:
+            if users.count() == 0:
                 text = "Oppp!! usa /login <password> para iniciar tu usuario"
 
             else:
