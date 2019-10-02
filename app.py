@@ -47,7 +47,7 @@ def on_event():
                 text = 'Usuario {0} ha sido iniciado correctamente'.format(email)
 
         if message.startswith('/info'):
-            user = User.query().filter(User.email == email).first()
+            user = session.query(User).filter(User.email == email).first()
 
             #visualtime_client = VisualTimeHelper(user.email, user.password)
             #visualtime_client.login()
