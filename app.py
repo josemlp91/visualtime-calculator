@@ -49,11 +49,11 @@ def on_event():
         if message.startswith('/info'):
             user = session.query(User).filter(User.email == email).first()
 
-            #visualtime_client = VisualTimeHelper(user.email, user.password)
-            #visualtime_client.login()
+            visualtime_client = VisualTimeHelper(user.email, user.password)
+            visualtime_client.login()
 
-            #output_time = visualtime_client.get_output_time()['output_time']
-            text = '{0} said: {1}'.format(user.email, user.password)
+            output_time = visualtime_client.get_output_time()['output_time']
+            text = '{0} said: {1}'.format(user.email, output_time)
 
 
     else:
