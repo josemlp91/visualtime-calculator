@@ -36,15 +36,13 @@ def on_event():
     if event['type'] == 'ADDED_TO_SPACE' and event['space']['type'] == 'ROOM':
         text = 'Thanks for adding me to "{0}"!'.format(event['space']['displayName'])
 
-
     elif event['type'] == 'MESSAGE':
         message = event['message']['text']
-
 
         if message.startswith('/login'):
             if len(message.split()) == 2:
                 password = message.split()[1]
-                user = get_or_create(session, User, email=email, password=password)
+                get_or_create(session, User, email=email, password=password)
                 text = 'Usuario {0} ha sido iniciado correctamente'.format(email)
 
         if message.startswith('/info'):
@@ -52,14 +50,19 @@ def on_event():
 
             visualtime_client = VisualTimeHelper(user.email, user.password)
             visualtime_client.login()
-
-            text = '{0} said: {1}'.format(user.email, json.dumps(visualtime_client.get_output_time()))
-
+            visualtime_info = visualtime_client.get_output_time()
+            text = 'Hola {0}: \n ' \
+                   'Llevas trabajando :{1} \n' \
+                   'Hoy te vas a casa a las: {2} \n' \
+                   'El porcentaje de avanze de tu jornada es:{3}'.format(user.email,
+                                                                         visualtime_info['working_time'],
+                                                                         visualtime_info['output_time'],
+                                                                         visualtime_info['percent'])
 
     else:
         return
   
-    return jsonify({'text': text})
+    return jsonify({'text': event['message']['text']})
 
 
 
