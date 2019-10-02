@@ -55,7 +55,7 @@ def on_event():
             text = 'Hola {0}: \n' \
                    'Llevas trabajando: {1} \n' \
                    'Hoy te vas a casa a las: {2} \n' \
-                   'El porcentaje de avanze de tu jornada es: {3}'.format(user.email,
+                   'El porcentaje de avance de tu jornada es: {3}'.format(user.email,
                                                                          visualtime_info['working_time'],
                                                                          visualtime_info['output_time'].split()[1],
                                                                          visualtime_info['percent'])
