@@ -64,8 +64,8 @@ def on_event():
                                                                              visualtime_info['working_time'],
                                                                              visualtime_info['output_time'].split()[1],
                                                                              visualtime_info['percent'])
-            if user.email == "sergio.rodriguez@intelligenia.com":
-                text = 'Sergio, eres un paquete, no te vas de la oficina hasta que termines todo!!! Pringao!'
+                if user.email == "sergio.rodriguez@intelligenia.com":
+                    text = 'Sergio, eres un paquete, no te vas de la oficina hasta que termines todo!!! Pringao!'
 
     else:
         return
