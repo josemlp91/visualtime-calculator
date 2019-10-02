@@ -47,12 +47,13 @@ def on_event():
                 text = 'Usuario {0} ha sido iniciado correctamente'.format(email)
 
         if message.startswith('/info'):
-            user = session.query(User).filter(User.email == email).first()
+            users = session.query(User).filter(User.email == email)
 
-            if not user:
+            if not users:
                 text = "Oppp!! usa /login <password> para iniciar tu usuario"
 
             else:
+                user = users.first()
                 visualtime_client = VisualTimeHelper(user.email, user.password)
                 visualtime_client.login()
                 visualtime_info = visualtime_client.get_output_time()
