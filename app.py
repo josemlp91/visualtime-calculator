@@ -15,7 +15,7 @@ def on_event():
     if event['type'] == 'ADDED_TO_SPACE' and event['space']['type'] == 'ROOM':
         text = 'Thanks for adding me to "%s"!' % event['space']['displayName']
     elif event['type'] == 'MESSAGE':
-        text = 'You said: `%s`' % event['message']['text']
+        text = '{0} said: {1}'.format(event['message']['sender']['email'], event['message']['text'])
     else:
         return
   
