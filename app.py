@@ -44,6 +44,7 @@ def on_event():
             if len(message.split()) == 2:
                 password = message.split()[1]
                 user = get_or_create(session, User, email=email, password=password)
+                text = 'Usuario {0} ha sido iniciado correctamente'.format(email)
 
         if message.startswith('/info'):
             user = User.query().filter(User.email == email).first()
