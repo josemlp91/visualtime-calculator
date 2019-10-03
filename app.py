@@ -70,7 +70,7 @@ def on_event():
                                                             visualtime_info['output_time'].split()[1],
                                                             visualtime_info['percent'],
                                                             visualtime_info['day'],
-                                                            "trabajando" if int(visualtime_info['direction'] == 1) else "descansando")
+                                                            "trabajando" if int(visualtime_info['direction']) == 1 else "descansando")
 
                 if user.email == "sergio.rodriguez@intelligenia.com":
                     text = 'Sergio, eres un paquete, no te vas de la oficina hasta que termines todo!!! Pringao!'
