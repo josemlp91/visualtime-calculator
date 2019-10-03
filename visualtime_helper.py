@@ -99,6 +99,10 @@ class VisualTimeHelper:
                 except:
                     work_hours = 7
                     work_minutes = 0
+            else:
+                work_hours = 7
+                work_minutes = 40
+
 
         if len(input_times) - len(output_times) == 1:
             output_times.append(datetime.now())
@@ -110,6 +114,7 @@ class VisualTimeHelper:
         for i, time in enumerate(input_times):
             time_diff = output_times[i] - input_times[i]
             time_diff_acumulator.append(time_diff.seconds)
+
 
         min_daily_working_seconds = (work_hours * 60 * 60) + (work_minutes * 60)
         working_seconds = sum(time_diff_acumulator)
