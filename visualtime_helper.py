@@ -81,13 +81,15 @@ class VisualTimeHelper:
         input_times = []
         output_times = []
 
+        last_direction = 2
         for push in puches:
             if push.get('deleted'):
                 continue
 
-            if push.get('direction') == 1:
+            last_direction = push.get('direction')
+            if last_direction == 1:
                 input_times.append(datetime.strptime(push.get('dateTime')[0:19], '%Y-%m-%dT%H:%M:%S'))
-            elif push.get('direction') == 2:
+            elif last_direction == 2:
                 output_times.append(datetime.strptime(push.get('dateTime')[0:19], '%Y-%m-%dT%H:%M:%S'))
 
         if not work_hours or not work_minutes:
@@ -131,5 +133,25 @@ class VisualTimeHelper:
             "now": str(now),
             "percent": round((working_seconds * 100) / min_daily_working_seconds),
             "balance": str(balance),
-            "output_time_with_balance": str(output_time - balance)
+            "output_time_with_balance": str(output_time - balance),
+            "status": "working" if last_direction == 1 else "taking a break",
+            "direction": last_direction,
         }
+
+    def push(self):
+
+        status = self.get_output_time()['status']
+        push_url = self.base_url + "/api/punches/"
+
+        push_payload = {
+            "direction": 1 if status == 2 else 2,
+            "idEmployee": self.user_id,
+            "isReliable": True,
+            "timeZone": "Africa/Ceuta"
+        }
+        response = requests.post(push_url, json=push_payload, headers=self.headers)
+
+        if response.status_code == 200 and response.json().get('result') == True:
+            return True
+
+        return False

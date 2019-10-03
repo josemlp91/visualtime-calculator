@@ -62,15 +62,34 @@ def on_event():
                        'Llevas trabajando: {1} \n' \
                        'Hoy te vas a casa a las: {2} \n' \
                        'El porcentaje de avance de tu jornada es: {3} % \n' \
-                       'La jornada de hoy tiene: {4} horas'.format(user.email,
+                       'La jornada de hoy tiene: {4} horas \n' \
+                       'Ahora mismo te encuentras: {5}'.format(user.email,
                                                             visualtime_info['working_time'],
                                                             visualtime_info['output_time'].split()[1],
                                                             visualtime_info['percent'],
-                                                            visualtime_info['day'])
+                                                            visualtime_info['day'],
+                                                            "trabajando" if visualtime_info['status'] == 1 else "descansando")
 
                 if user.email == "sergio.rodriguez@intelligenia.com":
                     text = 'Sergio, eres un paquete, no te vas de la oficina hasta que termines todo!!! Pringao!'
 
+        elif message.startswith("/push"):
+
+            users = session.query(User).filter(User.email == email)
+
+            if users.count() == 0:
+                text = "Oppp!! usa /login <password> para iniciar tu usuario"
+
+            else:
+                user = users.first()
+                visualtime_client = VisualTimeHelper(user.email, user.password)
+                visualtime_client.login()
+                visualtime_info = visualtime_client.push()
+
+                if visualtime_info:
+                    text = "Ok!! Fichaje creado con éxito."
+                else:
+                    text = "Upps! Hay un error creado el fichaje."
     else:
         return
   
