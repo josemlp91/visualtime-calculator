@@ -93,8 +93,12 @@ def on_event():
 
         elif message.startswith("/logout"):
             users = session.query(User).filter(User.email == email)
-            users.delete(synchronize_session=False)
-            text = "Ha cerrado sesión con éxito."
+
+            if users.count() == 0:
+                text = "Oppp!! usa /login <password> para iniciar tu usuario"
+            else:
+                users.delete(synchronize_session=False)
+                text = "Ha cerrado sesión con éxito."
 
     else:
         return
