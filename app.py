@@ -72,9 +72,6 @@ def on_event():
                                                             visualtime_info['day'],
                                                             "trabajando" if int(visualtime_info['direction']) == 1 else "descansando")
 
-                if user.email == "sergio.rodriguez@intelligenia.com":
-                    text = 'Sergio, eres un paquete, no te vas de la oficina hasta que termines todo!!! Pringao!'
-
         elif message.startswith("/push"):
 
             users = session.query(User).filter(User.email == email)
