@@ -58,6 +58,8 @@ def on_event():
                 visualtime_client = VisualTimeHelper(user.email, user.password)
                 visualtime_client.login()
                 visualtime_info = visualtime_client.get_output_time()
+
+
                 text = 'Hola {0}: \n' \
                        'Llevas trabajando: {1} \n' \
                        'Hoy te vas a casa a las: {2} \n' \
@@ -68,7 +70,7 @@ def on_event():
                                                             visualtime_info['output_time'].split()[1],
                                                             visualtime_info['percent'],
                                                             visualtime_info['day'],
-                                                            "trabajando" if visualtime_info['status'] == 1 else "descansando")
+                                                            "trabajando" if int(visualtime_info['direction'] == 1) else "descansando")
 
                 if user.email == "sergio.rodriguez@intelligenia.com":
                     text = 'Sergio, eres un paquete, no te vas de la oficina hasta que termines todo!!! Pringao!'
