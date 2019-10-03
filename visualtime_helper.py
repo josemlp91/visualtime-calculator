@@ -140,11 +140,16 @@ class VisualTimeHelper:
 
     def push(self):
 
-        status = self.get_output_time()['status']
+        direction = int(self.get_output_time()['direction'])
         push_url = self.base_url + "/api/punches/"
 
+        if direction == 2:
+            new_direction = 1
+        elif direction == 1:
+            new_direction = 2
+
         push_payload = {
-            "direction": 1 if status == 2 else 2,
+            "direction": new_direction,
             "idEmployee": self.user_id,
             "isReliable": True,
             "timeZone": "Africa/Ceuta"
