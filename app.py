@@ -96,6 +96,7 @@ def on_event():
     return jsonify({'text': text})
 
 
+
 @app.route('/api/getWorkingTime', methods=['POST'])
 def get_working_time():
     content = request.get_json(silent=True)
