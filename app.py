@@ -90,6 +90,12 @@ def on_event():
                     text = "Ok!! Fichaje creado con éxito."
                 else:
                     text = "Upps! Hay un error creado el fichaje."
+
+        elif message.startswith("/logout"):
+            users = session.query(User).filter(User.email == email)
+            users.delete(synchronize_session=False)
+            text = "Ha cerrado sesión con éxito."
+
     else:
         return
   
