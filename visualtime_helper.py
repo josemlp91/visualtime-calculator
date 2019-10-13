@@ -4,7 +4,7 @@ import requests
 import hashlib
 import pytz
 
-import os, time
+import os, time, re
 from datetime import date, datetime, timedelta
 from datetime import datetime
 
@@ -54,7 +54,7 @@ class VisualTimeHelper:
         self.headers['Authorization'] = f"Bearer {self.token}"
 
     def get_balance(self):
-        balance_url = self.base_url + f"/api/accruals//{self.user_id}"
+        balance_url = self.base_url + f"/api/accruals/{self.user_id}"
         response = requests.get(balance_url, headers=self.headers)
         try:
             balance = response.json()
@@ -68,7 +68,35 @@ class VisualTimeHelper:
 
         return timedelta(minutes=balance_minutes)
 
-    def get_output_time(self, work_hours=None, work_minutes=None):
+    def get_custom_balance(self, first_day=f"{datetime.today().replace(day=1):%Y%m%d}", end_day=f"{datetime.today():%Y%m%d}"):
+        balance_url = self.base_url + f"/api/reports/25"
+        print(first_day, end_day)
+        if not re.match("\d{8}", first_day) or not re.match("\d{8}", end_day):
+            print( "Input format is not correct" ) 
+            print( "Format: YYYYMMDD ")
+            return 0
+
+        parameters = "{},{}".format(first_day, end_day)
+        parameters_data = {"id":25, "parameters":parameters}
+
+        response = requests.post(balance_url, headers=self.headers, data=json.dumps(parameters_data))
+
+        if response.status_code != 200:
+            return response.text
+
+        try:
+            balance = json.loads(response.json()[0])
+        except:
+            return 0
+        
+        try:
+            balance_hours, balance_minutes = balance["Balance"].split(":")
+        except:
+            return 0
+
+        return timedelta(minutes=int(balance_minutes), hours=int(balance_hours))
+
+    def get_output_time(self, work_hours=None, work_minutes=None, balance_init_date=None, balance_finish_date=None):
         today = date.today()
         str_today = today.strftime("%Y%m%d")
         shedule_url = self.base_url + f"/api/punches/GetEmployeePunchesBetweenDates/{self.user_id}/{str_today}/{str_today}"
@@ -125,6 +153,16 @@ class VisualTimeHelper:
 
         output_time = now + timedelta(seconds=diff_working_seconds)
         balance = self.get_balance()
+        
+        custom_balance = ""
+        if balance_init_date and balance_finish_date:
+            custom_balance = self.get_custom_balance(balance_init_date , balance_finish_date)
+        elif balance_init_date:
+            custom_balance = self.get_custom_balance(balance_init_date)
+        elif balance_finish_date:
+            custom_balance = self.get_custom_balance(end_day=balance_finish_date)
+        else:
+            custom_balance = self.get_custom_balance()
 
         return {
             "working_time": str(timedelta(seconds=working_seconds)),
@@ -133,6 +171,7 @@ class VisualTimeHelper:
             "now": str(now),
             "percent": round((working_seconds * 100) / min_daily_working_seconds),
             "balance": str(balance),
+            "custom_balance": str(custom_balance),
             "output_time_with_balance": str(output_time - balance),
             "status": "working" if last_direction == 1 else "taking a break",
             "direction": last_direction,
