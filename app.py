@@ -66,11 +66,13 @@ def on_event():
                        'Hoy te vas a casa a las: {2} \n' \
                        'El porcentaje de avance de tu jornada es: {3} % \n' \
                        'La jornada de hoy tiene: {4} horas \n' \
-                       'Ahora mismo te encuentras: {5}'.format(user.email,
+                       'Tu balance acumulado es: {5} \n' \
+                       'Ahora mismo te encuentras: {6}'.format(user.email,
                                                             visualtime_info['working_time'],
                                                             visualtime_info['output_time'].split()[1],
                                                             visualtime_info['percent'],
                                                             visualtime_info['day'],
+                                                            visualtime_info['custom_balance'],
                                                             "trabajando" if int(visualtime_info['direction']) == 1 else "descansando")
 
         elif message.startswith("/push"):
