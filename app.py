@@ -6,6 +6,7 @@ from visualtime_helper import VisualTimeHelper
 import os
 import sys
 import json
+import re
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -77,7 +78,7 @@ def on_event():
             users = session.query(User).filter(User.email == email)
 
             if users.count() == 0:
-                text = "Oppp!! usa /login <password> para iniciar tu usuario"
+                text = u"Oppp!! usa /login <password> para iniciar tu usuario"
 
             else:
                 user = users.first()
@@ -86,18 +87,18 @@ def on_event():
                 visualtime_info = visualtime_client.push()
 
                 if visualtime_info:
-                    text = "Ok!! Fichaje creado con éxito."
+                    text = u"Ok!! Fichaje creado con éxito."
                 else:
-                    text = "Upps! Hay un error creado el fichaje."
+                    text = u"Upps! Hay un error creado el fichaje."
 
         elif message.startswith("/logout"):
             users = session.query(User).filter(User.email == email)
 
             if users.count() == 0:
-                text = "Oppp!! usa /login <password> para iniciar tu usuario"
+                text = u"Oppp!! usa /login <password> para iniciar tu usuario"
             else:
                 users.delete(synchronize_session=False)
-                text = "Ha cerrado sesión con éxito."
+                text = u"Ha cerrado sesión con éxito."
 
     else:
         return
@@ -115,6 +116,9 @@ def get_working_time():
     work_hours = content.get('work_hours')
     work_minutes = content.get('work_minutes')
 
+    balance_init_date = content.get('balance_init_date')
+    balance_finish_date = content.get('balance_finish_date')
+
     if work_hours and work_minutes:
         try:
             work_hours = int(work_hours)
@@ -125,6 +129,14 @@ def get_working_time():
                 "work_minutes": "work minutes must be integer value"
             }
             return errors, status.HTTP_400_BAD_REQUEST
+    
+    if balance_init_date and not re.match("\d{8}", balance_init_date):
+        error = {"balance_init_date":"Balance init date wrong. Format is YYYYMMDD. Example: 20191001"}
+        return error, status.HTTP_400_BAD_REQUEST
+     
+    if balance_finish_date and not re.match("\d{8}", balance_finish_date):
+        error = {"balance_finish_date":"Balance finish date wrong. Format is YYYYMMDD. Example: 20191001"}
+        return error, status.HTTP_400_BAD_REQUEST
 
     if not username or not password:
         errors = {"username": "Username is requiered", "password": "Password is requiered"}
@@ -133,7 +145,7 @@ def get_working_time():
     visualtime_client = VisualTimeHelper(username, password)
     visualtime_client.login()
 
-    return jsonify(visualtime_client.get_output_time(work_hours, work_minutes))
+    return jsonify(visualtime_client.get_output_time(work_hours, work_minutes, balance_init_date, balance_finish_date))
 
 
 if __name__ == '__main__':
